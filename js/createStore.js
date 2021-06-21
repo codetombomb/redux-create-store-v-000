@@ -1,28 +1,42 @@
-let state;
+// write your createStore function here
+function createStore(reducer){
+  let state;
+  function dispatch(action){
+    state = reducer(state, action);
+    render()
+  }
 
-function reducer(state = { count: 0 }, action) {
+  function getState(){
+    return state;
+  }
+
+  return {
+    dispatch,
+    getState
+  }
+}
+
+function candyReducer(state = [], action) {
   switch (action.type) {
-    case 'INCREASE_COUNT':
-      return { count: state.count + 1 };
-
+    case 'ADD_CANDY':
+      return [...state, action.candy];
     default:
       return state;
   }
-};
-
-function dispatch(action){
-  state = reducer(state, action);
-  render();
-};
+}
 
 function render() {
   let container = document.getElementById('container');
-  container.textContent = state.count;
+  if(store.getState()) {
+    container.textContent = store.getState().join(' ')
+  } else {
+    throw new Error("the store's state has not been defined yet")
+  }
 };
 
-dispatch({ type: '@@INIT' })
-let button = document.getElementById('button');
+// Use your createStore function and the functions provided here to create a store.
+// Once the store is created, call an initial dispatch.
 
-button.addEventListener('click', function() {
-    dispatch({ type: 'INCREASE_COUNT' });
-})
+let store = createStore(candyReducer);
+store.dispatch({type: '@@INIT'})
+
